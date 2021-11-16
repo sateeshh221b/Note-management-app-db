@@ -1,0 +1,69 @@
+{
+  "NoteTableScript": "CREATE TABLE [Note] (
+                     note_id int NOT NULL  Primary Key, 
+                     note_title varchar(250), 
+                     note_content text, 
+                     note_status varchar(20), 
+                     note_creation_date date,
+                     user_id BIGINT foreign key references [User](user_id)
+                    )",
+  "UserTableScript": "CREATE TABLE [User] (
+                     user_id BIGINT NOT NULL Primary Key,
+                     user_name varchar(60), 
+                     user_added_date date, 
+                     user_password varchar(60),
+                     user_mobile varchar(60),
+                    )",
+  "CategoryTableScript":"CREATE TABLE [Category] (
+                       category_id int NOT NULL  Primary Key, 
+                       category_name varchar(40), 
+                       category_descr text, 
+                       category_creation_date Date, 
+                       category_creator BIGINT foreign key references [User](user_id)
+                      )",
+  "ReminderTableScript":"CREATE TABLE [Reminder] (
+                        reminder_id int NOT NULL Primary Key, 
+                        reminder_name varchar(40), 
+                        reminder_descr text, 
+                        reminder_type varchar(50),
+                        reminder_creation_date Date, 
+                        reminder_creator BIGINT foreign key references [User](user_id)
+                      )",
+  "NoteCategoryTableScript":"CREATE TABLE [NoteCategory] (
+                             notecategory_id int NOT NULL Primary Key, 
+                             note_id int foreign key references [Note](note_id) , 
+                             category_id int foreign key references [Category](category_id),
+                             )",
+  "NoteReminderTableScript":"CREATE TABLE [NoteReminder] (
+                             notereminder_id int NOT NULL  Primary Key, 
+                             note_id int foreign key references [Note](note_id) , 
+                             reminder_id int foreign key references [Reminder](reminder_id),
+                             )",
+  "InsertScripts":{
+    "User":"INSERT INTO [User] (user_id,user_name,user_added_date,user_password,user_mobile) VALUES (112233,'Maya','2019-01-02','Maya1214',8012345679);
+            INSERT INTO [User] (user_id,user_name,user_added_date,user_password,user_mobile) VALUES (112244,'Nair','2019-01-11','Welcome',9023778467)",
+    "Note":"INSERT INTO [Note]  VALUES 
+     (1, 'Today Tasks', '1.Check emails and replt to them 2. Start the Pro..', 'InProgress', '2019-01-21',112233)
+    ,(2, 'Training to plan', '1.Application related 2.Technical related', 'Yet To Start', '2019-01-31',112244)
+    ,(3, 'Things to have today', '1.Fruits 2.More water', 'InProgress', '2019-01-25',112244)",
+    "Category":"INSERT INTO [Category]  VALUES (1, 'Official', 'Office related notes', '2019-01-21',112233)
+    ,(2, 'Diet', 'Health related notes','2019-01-24',112244)",
+    "Reminder":"INSERT INTO [Reminder]  VALUES (1, 'KT reminder', 'Session on technical queries','Office Reminders', '2019-02-12',112233)
+    ,(2, 'Personal reminder', 'Pick children','Personal Reminders','2019-01-24',112244)",
+    "NoteCategory":"INSERT INTO [NoteCategory]  VALUES (1, 1, 1)
+    ,(2,2,1)
+    ,(3,3,2)",
+    "NoteReminder":"INSERT INTO [NoteReminder]  VALUES (1, 3, 2)
+    ,(2,2,1)"
+  },
+  "Query1":"select * from [User] where USER_ID=112233 and user_password='Maya1214'",
+  "Query2":"select * from [Note] where note_creation_date='01/31/2019'",
+  "Query3":"select * from [Category] where category_creation_date > '01/22/2019'",
+  "Query4":"select category_id, category_name, category_descr, category_creation_date, category_creator from Category inner join Note on note.user_id= Category.category_creator where Note.note_id=1",
+  "Query5":"select * from [Note] where user_id=112244",
+  "Query6":"select * from Note inner join NoteCategory on NoteCategory.note_id = Note.note_id where NoteCategory.category_id=1",
+  "Query7":"select * from Reminder inner join NoteReminder on reminder.reminder_id= NoteReminder.reminder_id where NoteReminder.note_id=2",
+  "Query8":"update note set note_status='Completed' where note_id=3",
+  "Query9":"INSERT INTO NoteReminder (notereminder_id, note_id, reminder_id) select 3,1,reminder_id from Reminder where Reminder_type='Personal Reminders'",
+  "Query10":"delete NoteReminder from NoteReminder inner join Note on Note.note_id=NoteReminder.note_id where NoteReminder.note_id=2"
+}
